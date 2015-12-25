@@ -1,13 +1,11 @@
 <?php
+
 /**
  * @author Peter Lai
  * @email alk03073135@gmail.com
  * @licence MIT
  * @more details https://www.google.com/recaptcha/intro/index.html
  **/
- 
-//require_once __DIR__ . '/src/autoload.php';
- 
 class GreCaptcha extends CInputWidget 
 {
 	// render id
