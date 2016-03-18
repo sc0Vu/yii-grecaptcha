@@ -1,20 +1,30 @@
 <h2>yii-grecaptcha usage instructions</h2>
 <ol>
-<li>check source code and google reCaptcha</li>
-<li>get reCaptcha sitekey and privatekey(<a href="https://www.google.com/recaptcha/admin" target="_blank">reCaptcha admin</a>)</li>
+<li>support pjax usage</li>
+<li>check source code and <a href="https://developers.google.com/recaptcha/">google reCaptcha</a></li>
+<li>get reCaptcha sitekey and privatekey form <a href="https://www.google.com/recaptcha/admin" target="_blank">reCaptcha admin</a></li>
 <li>import GreCaptcha and GreCaptchaValidator</li>
-<li>use in view
-<code><?php $this->widget('extensions.grecaptcha.GreCaptcha',
+<li>use in view</li>
+<pre><?php $this->widget('extensions.grecaptcha.GreCaptcha',
 		                    array(
 							'model'=>$model,
-							'siteKey'=>'your site key',
-							)); ?></code></li>
-<li>5.use in model
-<code>
+                            'pjax'=>true,
+							'siteKey'=>'your site key'
+							)
+                        );
+</pre>
+<li>use in model</li>
+<pre>
 public $reCaptcha;
 public function rules() {
     return array(
-	    array('reCaptcha', 'extensions.grecaptcha.GreCaptchaValidator', 'privateKey'=>'6Lf-fQoTAAAAAC3XpWFFTUakT9SmJ88ghyh_i1JC', 'on'=>'login'),
+	    array(
+        'reCaptcha',
+        'pathto GreCaptchaValidator',
+        'privateKey'=>'your private key',
+        'on'=>'your action'
+        )
 	)
-} </code></li>
+}
+</pre>
 </ol>

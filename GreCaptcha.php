@@ -8,6 +8,9 @@
  **/
 class GreCaptcha extends CInputWidget 
 {
+	// script id
+	public $scriptId = 'recaptcha-sdk';
+	
 	// render id
 	public $id = 'greCaptcha';
 	
@@ -22,6 +25,9 @@ class GreCaptcha extends CInputWidget
 	
 	// normal, compact
 	public $size = 'normal';
+	
+	// render
+	public $render = 'explicit';
 	
 	public $tableindex = 0;
 	
@@ -40,6 +46,9 @@ class GreCaptcha extends CInputWidget
 	// defer load javascript
 	public $defer = true;
 	
+	// pjax render
+	public $isPjax = false;
+	
 	// gereCaptcha language default zh-TW see more https://developers.google.com/recaptcha/docs/language
 	public $language = 'zh-TW';
 	
@@ -48,15 +57,31 @@ class GreCaptcha extends CInputWidget
 	public function init() 
 	{
 		if (empty($this->siteKey) || empty($this->sorceUrl)) {
-			throw new CHttpException(404, $errNotSet);
+			throw new CHttpException(404, $this->errNotSet);
 		} else {
-			Yii::app()->getClientScript()->registerScriptFile($this->sorceUrl . '?onload=captchaCallBack&render=explicit&hl=' . $this->language, CClientScript::POS_END, array('async'=>$this->async, 'defer'=>$this->defer));
+			$srcUrl = $this->sorceUrl . '?onload=captchaCallBack&render='.$this->render.'&hl=' . $this->language;
+			if (!$this->pjax) {
+				Yii::app()->getClientScript()->registerScriptFile($srcUrl, CClientScript::POS_END, array('async'=>$this->async, 'defer'=>$this->defer));
+			} else {
+				$script = <<<SCRIPT
+				(function(d,s,id,a,b){
+					if (d.getElementById(id)) return;
+					b = d.getElementsByTagName(s)[0];
+					a = d.createElement(s);
+					a.src = {$srcUrl};
+					a.async = {$this->async};
+					a.defer = {$this->defer};
+					b.parentNode.insertBefore(a,b);
+				})(docement,'script','{$this->scriptId}');
+SCRIPT;
+				echo CHtml::tag('script', array('src'=>$srcUrl, 'async'=>$this->async, 'defer'=>$this->defer), false, true);
+			}
 		}
 	}
 	
 	public function run()
 	{
-		$grecaptchaJs =<<<EOP
+		$grecaptchaJs = <<<SCRIPT
 		      var captchaCallBack = function() {
               grecaptcha.render('{$this->id}', {
                 'sitekey' : '{$this->siteKey}',
@@ -68,8 +93,13 @@ class GreCaptcha extends CInputWidget
 				'expired-callback' : {$this->expiredCallback},
               });
             }; 
-EOP;
-		Yii::app()->getClientScript()->registerScript(get_class($this), $grecaptchaJs, CClientScript::POS_HEAD);
+SCRIPT;
+		if (!$this->pjax) {
+			Yii::app()->getClientScript()->registerScript(get_class($this), $grecaptchaJs, CClientScript::POS_HEAD);
+		} else {
+			echo CHtml::tag('script', array(), $grecaptchaJs, true);;
+		}
+		
         echo CHtml::tag('div', array('id'=>$this->id), '', true);
 	}
 }
