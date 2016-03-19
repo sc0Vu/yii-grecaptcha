@@ -57,10 +57,10 @@ class GreCaptcha extends CInputWidget
 	public function init() 
 	{
 		if (empty($this->siteKey) || empty($this->sorceUrl)) {
-			throw new CHttpException(404, $this->errNotSet);
+			throw new CException($this->errNotSet);
 		} else {
-			$srcUrl = $this->sorceUrl . '?onload=captchaCallBack&render='.$this->render.'&hl=' . $this->language;
-			if (!$this->pjax) {
+			$srcUrl = sprintf("%s?onload=captchaCallBack&render=%s&hl=%s", $this->sorceUrl, $this->render, $this->language);
+			if (!$this->isPjax) {
 				Yii::app()->getClientScript()->registerScriptFile($srcUrl, CClientScript::POS_END, array('async'=>$this->async, 'defer'=>$this->defer));
 			} else {
 				$script = <<<SCRIPT
@@ -68,13 +68,13 @@ class GreCaptcha extends CInputWidget
 					if (d.getElementById(id)) return;
 					b = d.getElementsByTagName(s)[0];
 					a = d.createElement(s);
-					a.src = {$srcUrl};
+					a.src = "{$srcUrl}";
 					a.async = {$this->async};
 					a.defer = {$this->defer};
 					b.parentNode.insertBefore(a,b);
-				})(docement,'script','{$this->scriptId}');
+				})(document,'script','{$this->scriptId}');
 SCRIPT;
-				echo CHtml::tag('script', array('src'=>$srcUrl, 'async'=>$this->async, 'defer'=>$this->defer), false, true);
+				echo CHtml::tag('script', array(''), $script, true);
 			}
 		}
 	}
@@ -94,7 +94,7 @@ SCRIPT;
               });
             }; 
 SCRIPT;
-		if (!$this->pjax) {
+		if (!$this->isPjax) {
 			Yii::app()->getClientScript()->registerScript(get_class($this), $grecaptchaJs, CClientScript::POS_HEAD);
 		} else {
 			echo CHtml::tag('script', array(), $grecaptchaJs, true);;
