@@ -3,6 +3,7 @@
  * This is a PHP library that handles calling reCAPTCHA.
  *
  * @copyright Copyright (c) 2015, Google Inc.
+ *
  * @link      http://www.google.com/recaptcha
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +24,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace ReCaptcha;
 
 /**
@@ -33,18 +33,21 @@ class ReCaptcha
 {
     /**
      * Version of this client library.
+     *
      * @const string
      */
     const VERSION = 'php_1.1.1';
 
     /**
      * Shared secret for the site.
+     *
      * @var type string
      */
     private $secret;
 
     /**
      * Method used to communicate  with service. Defaults to POST request.
+     *
      * @var RequestMethod
      */
     private $requestMethod;
@@ -52,7 +55,7 @@ class ReCaptcha
     /**
      * Create a configured instance to use the reCAPTCHA service.
      *
-     * @param string $secret shared secret between site and reCAPTCHA server.
+     * @param string        $secret        shared secret between site and reCAPTCHA server.
      * @param RequestMethod $requestMethod method used to send the request. Defaults to POST.
      */
     public function __construct($secret, RequestMethod $requestMethod = null)
@@ -80,18 +83,21 @@ class ReCaptcha
      *
      * @param string $response The value of 'g-recaptcha-response' in the submitted form.
      * @param string $remoteIp The end user's IP address.
+     *
      * @return Response Response from the service.
      */
     public function verify($response, $remoteIp = null)
     {
         // Discard empty solution submissions
         if (empty($response)) {
-            $recaptchaResponse = new Response(false, array('missing-input-response'));
+            $recaptchaResponse = new Response(false, ['missing-input-response']);
+
             return $recaptchaResponse;
         }
 
         $params = new RequestParameters($this->secret, $response, $remoteIp, self::VERSION);
         $rawResponse = $this->requestMethod->submit($params);
+
         return Response::fromJson($rawResponse);
     }
 }

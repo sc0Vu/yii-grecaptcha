@@ -6,64 +6,64 @@
  * @licence MIT
  * @more details https://www.google.com/recaptcha/intro/index.html
  **/
-class GreCaptcha extends CInputWidget 
+class GreCaptcha extends CInputWidget
 {
-	// script id
-	public $scriptId = 'recaptcha-sdk';
-	
-	// render id
-	public $id = 'greCaptcha';
-	
-	// site key
-	public $siteKey = '';
-	
-	// light, dark
-	public $theme = 'light';
-	
-	// image, audio
-	public $type = 'image';
-	
-	// normal, compact
-	public $size = 'normal';
-	
-	// render
-	public $render = 'explicit';
-	
-	public $tableindex = 0;
-	
-	// success callback function, 'function(){alert("Success")}';
-	public $callback = "''";
-	
-	// expired call back function, 'function(){alert("Expired")}';
-	public $expiredCallback = "''";
-	
-	// google recaptcha sorce
-	public $sorceUrl = 'https://www.google.com/recaptcha/api.js';
-	
-	// async load javascript
-	public $async = true;
-	
-	// defer load javascript
-	public $defer = true;
-	
-	// pjax render
-	public $isPjax = false;
-	
-	// gereCaptcha language default zh-TW see more https://developers.google.com/recaptcha/docs/language
-	public $language = 'zh-TW';
-	
-	protected $errNotSet = 'Please set publicSiteKey or sorceUrl.';
-	
-	public function init() 
-	{
-		if (empty($this->siteKey) || empty($this->sorceUrl)) {
-			throw new CException($this->errNotSet);
-		} else {
-			$srcUrl = sprintf("%s?onload=captchaCallBack&render=%s&hl=%s", $this->sorceUrl, $this->render, $this->language);
-			if (!$this->isPjax) {
-				Yii::app()->getClientScript()->registerScriptFile($srcUrl, CClientScript::POS_END, array('async'=>$this->async, 'defer'=>$this->defer));
-			} else {
-				$script = <<<SCRIPT
+    // script id
+    public $scriptId = 'recaptcha-sdk';
+
+    // render id
+    public $id = 'greCaptcha';
+
+    // site key
+    public $siteKey = '';
+
+    // light, dark
+    public $theme = 'light';
+
+    // image, audio
+    public $type = 'image';
+
+    // normal, compact
+    public $size = 'normal';
+
+    // render
+    public $render = 'explicit';
+
+    public $tableindex = 0;
+
+    // success callback function, 'function(){alert("Success")}';
+    public $callback = "''";
+
+    // expired call back function, 'function(){alert("Expired")}';
+    public $expiredCallback = "''";
+
+    // google recaptcha sorce
+    public $sorceUrl = 'https://www.google.com/recaptcha/api.js';
+
+    // async load javascript
+    public $async = true;
+
+    // defer load javascript
+    public $defer = true;
+
+    // pjax render
+    public $isPjax = false;
+
+    // gereCaptcha language default zh-TW see more https://developers.google.com/recaptcha/docs/language
+    public $language = 'zh-TW';
+
+    protected $errNotSet = 'Please set publicSiteKey or sorceUrl.';
+
+    public function init()
+    {
+        if (empty($this->siteKey) || empty($this->sorceUrl)) {
+            throw new CException($this->errNotSet);
+        } else {
+            $srcUrl = sprintf('%s?onload=captchaCallBack&render=%s&hl=%s', $this->sorceUrl, $this->render, $this->language);
+            if (!$this->isPjax) {
+                Yii::app()->getClientScript()->registerScriptFile($srcUrl, CClientScript::POS_END, ['async' => $this->async, 'defer' => $this->defer]);
+            } else {
+                $script = <<<SCRIPT
 				(function(d,s,id,a,b){
 					if (d.getElementById(id)) return;
 					b = d.getElementsByTagName(s)[0];
@@ -74,14 +74,14 @@ class GreCaptcha extends CInputWidget
 					b.parentNode.insertBefore(a,b);
 				})(document,'script','{$this->scriptId}');
 SCRIPT;
-				echo CHtml::tag('script', array(''), $script, true);
-			}
-		}
-	}
-	
-	public function run()
-	{
-		$grecaptchaJs = <<<SCRIPT
+                echo CHtml::tag('script', [''], $script, true);
+            }
+        }
+    }
+
+    public function run()
+    {
+        $grecaptchaJs = <<<SCRIPT
 		      var captchaCallBack = function() {
               grecaptcha.render('{$this->id}', {
                 'sitekey' : '{$this->siteKey}',
@@ -94,7 +94,7 @@ SCRIPT;
               });
             }; 
 SCRIPT;
-		$noscript = <<<NOSCRIPT
+        $noscript = <<<NOSCRIPT
 <noscript>
   <div>
     <div style="width: 302px; height: 422px; position: relative;">
@@ -117,14 +117,13 @@ SCRIPT;
   </div>
 </noscript>
 NOSCRIPT;
-		if (!$this->isPjax) {
-			Yii::app()->getClientScript()->registerScript(get_class($this), $grecaptchaJs, CClientScript::POS_HEAD);
-		} else {
-			echo CHtml::tag('script', array(), $grecaptchaJs, true);;
-		}
-		
-        echo CHtml::tag('div', array('id'=>$this->id), '', true);
+        if (!$this->isPjax) {
+            Yii::app()->getClientScript()->registerScript(get_class($this), $grecaptchaJs, CClientScript::POS_HEAD);
+        } else {
+            echo CHtml::tag('script', [], $grecaptchaJs, true);
+        }
+
+        echo CHtml::tag('div', ['id' => $this->id], '', true);
         echo $noscript;
-	}
+    }
 }
-?>
