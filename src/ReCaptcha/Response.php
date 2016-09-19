@@ -3,6 +3,7 @@
  * This is a PHP library that handles calling reCAPTCHA.
  *
  * @copyright Copyright (c) 2015, Google Inc.
+ *
  * @link      http://www.google.com/recaptcha
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +24,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace ReCaptcha;
 
 /**
@@ -33,20 +33,23 @@ class Response
 {
     /**
      * Succes or failure.
-     * @var boolean
+     *
+     * @var bool
      */
     private $success = false;
 
     /**
      * Error code strings.
+     *
      * @var array
      */
-    private $errorCodes = array();
+    private $errorCodes = [];
 
     /**
      * Build the response from the expected JSON returned by the service.
      *
      * @param string $json
+     *
      * @return \ReCaptcha\Response
      */
     public static function fromJson($json)
@@ -54,27 +57,27 @@ class Response
         $responseData = json_decode($json, true);
 
         if (!$responseData) {
-            return new Response(false, array('invalid-json'));
+            return new self(false, ['invalid-json']);
         }
 
         if (isset($responseData['success']) && $responseData['success'] == true) {
-            return new Response(true);
+            return new self(true);
         }
 
         if (isset($responseData['error-codes']) && is_array($responseData['error-codes'])) {
-            return new Response(false, $responseData['error-codes']);
+            return new self(false, $responseData['error-codes']);
         }
 
-        return new Response(false);
+        return new self(false);
     }
 
     /**
      * Constructor.
      *
-     * @param boolean $success
+     * @param bool  $success
      * @param array $errorCodes
      */
-    public function __construct($success, array $errorCodes = array())
+    public function __construct($success, array $errorCodes = [])
     {
         $this->success = $success;
         $this->errorCodes = $errorCodes;
@@ -83,7 +86,7 @@ class Response
     /**
      * Is success?
      *
-     * @return boolean
+     * @return bool
      */
     public function isSuccess()
     {

@@ -3,6 +3,7 @@
  * This is a PHP library that handles calling reCAPTCHA.
  *
  * @copyright Copyright (c) 2015, Google Inc.
+ *
  * @link      http://www.google.com/recaptcha
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,7 +24,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 namespace ReCaptcha\RequestMethod;
 
 use ReCaptcha\RequestMethod;
@@ -36,6 +36,7 @@ class Post implements RequestMethod
 {
     /**
      * URL to which requests are POSTed.
+     *
      * @const string
      */
     const SITE_VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
@@ -44,27 +45,29 @@ class Post implements RequestMethod
      * Submit the POST request with the specified parameters.
      *
      * @param RequestParameters $params Request parameters
+     *
      * @return string Body of the reCAPTCHA response
      */
     public function submit(RequestParameters $params)
     {
-        /**
+        /*
          * PHP 5.6.0 changed the way you specify the peer name for SSL context options.
          * Using "CN_name" will still work, but it will raise deprecated errors.
          */
         $peer_key = version_compare(PHP_VERSION, '5.6.0', '<') ? 'CN_name' : 'peer_name';
-        $options = array(
-            'http' => array(
-                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method' => 'POST',
+        $options = [
+            'http' => [
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
                 'content' => $params->toQueryString(),
                 // Force the peer to validate (not needed in 5.6.0+, but still works
                 'verify_peer' => true,
                 // Force the peer validation to use www.google.com
                 $peer_key => 'www.google.com',
-            ),
-        );
+            ],
+        ];
         $context = stream_context_create($options);
+
         return file_get_contents(self::SITE_VERIFY_URL, false, $context);
     }
 }
