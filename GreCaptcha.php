@@ -52,7 +52,7 @@ class GreCaptcha extends CInputWidget
 
     // gereCaptcha language default zh-TW see more https://developers.google.com/recaptcha/docs/language
     public $language = 'zh-TW';
-    
+
     // error message
     protected $errNotSet = 'Please set public SiteKey or sorceUrl.';
 
