@@ -1,4 +1,4 @@
-<h2>yii-grecaptcha usage instructions</h2>
+<h2>yii-grecaptcha usage instructions <img src="https://styleci.io/repos/40354054/shield?branch=master" alt="StyleCI Shield"></h2>
 <ol>
 <li>support pjax usage</li>
 <li>check source code and <a href="https://developers.google.com/recaptcha/">google reCaptcha</a></li>

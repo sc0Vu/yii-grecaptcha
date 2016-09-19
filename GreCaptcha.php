@@ -26,10 +26,11 @@ class GreCaptcha extends CInputWidget
     // normal, compact
     public $size = 'normal';
 
-    // render
+    // render method explicit, onload
     public $render = 'explicit';
 
-    public $tableindex = 0;
+    //tabindex of the widget
+    public $tabindex = 0;
 
     // success callback function, 'function(){alert("Success")}';
     public $callback = "''";
@@ -51,8 +52,9 @@ class GreCaptcha extends CInputWidget
 
     // gereCaptcha language default zh-TW see more https://developers.google.com/recaptcha/docs/language
     public $language = 'zh-TW';
-
-    protected $errNotSet = 'Please set publicSiteKey or sorceUrl.';
+    
+    // error message
+    protected $errNotSet = 'Please set public SiteKey or sorceUrl.';
 
     public function init()
     {
@@ -88,7 +90,7 @@ SCRIPT;
 				'theme' : '{$this->theme}',
 				'type' : '{$this->type}',
 				'size' :'{$this->size}',
-				'tableindex' : {$this->tableindex},
+				'tableindex' : {$this->tabindex},
 				'callback' : {$this->callback},
 				'expired-callback' : {$this->expiredCallback},
               });
